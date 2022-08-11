@@ -1,26 +1,60 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+// Render Prop
+import React from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import TextField from "./TextField";
 
-function App() {
+const SignUp = () => {
+  const validation = Yup.object({
+    firstName: Yup.string()
+      .max(15, "must be 15 characters or less")
+      .required("Required"),
+    lastName: Yup.string().max(15, "must be 15 or less").required("Required"),
+    email: Yup.string().email("Email is incorrect").required("Required"),
+    password: Yup.string()
+      .min(8, "Password must be 8 or more")
+      .required("Required"),
+    confirmPass: Yup.string().oneOf(
+      ["password", null],
+      "confirm password don't match"
+    ),
+  });
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Formik
+      initialValues={{
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        confirmPass: "",
+      }}
+      validationSchema={validation}
+    >
+      {(formik) => (
+        <>
+          {console.log(formik.values)}
+          <Form>
+            <h2 className="my-4 font-weight-bold">SignUp</h2>
+            <TextField label="First Name" name="firstName" type="text" />
+            <TextField label="Last Name" name="lastName" type="text" />
+            <TextField label="Email" name="email" type="email" />
+            <TextField label="Password" name="password" type="password" />
+            <TextField
+              label="Confirm Password"
+              name="confirmPass"
+              type="password"
+            />
+            <button className="btn btn-dark mt-4" type="submit">
+              Register
+            </button>
+            <button className="btn btn-danger mt-4" type="reset">
+              Reset
+            </button>
+          </Form>
+        </>
+      )}
+    </Formik>
   );
-}
+};
 
-export default App;
+export default SignUp;
